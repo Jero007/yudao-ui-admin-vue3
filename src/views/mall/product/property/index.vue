@@ -53,8 +53,8 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list">
-      <el-table-column align="center" label="编号" prop="id" />
-      <el-table-column align="center" label="名称" prop="name" />
+      <el-table-column align="center" label="编号" min-width="60" prop="id" />
+      <el-table-column align="center" label="属性名称" prop="name" min-width="150" />
       <el-table-column :show-overflow-tooltip="true" align="center" label="备注" prop="remark" />
       <el-table-column
         :formatter="dateFormatter"
@@ -73,9 +73,7 @@
           >
             编辑
           </el-button>
-          <el-button link type="primary">
-            <router-link :to="'/property/value/' + scope.row.id">属性值</router-link>
-          </el-button>
+          <el-button link type="primary" @click="goValueList(scope.row.id)">属性值</el-button>
           <el-button
             v-hasPermi="['product:property:delete']"
             link
@@ -99,10 +97,14 @@
   <!-- 表单弹窗：添加/修改 -->
   <PropertyForm ref="formRef" @success="getList" />
 </template>
-<script lang="ts" name="ProductProperty" setup>
+<script lang="ts" setup>
 import { dateFormatter } from '@/utils/formatTime'
 import * as PropertyApi from '@/api/mall/product/property'
 import PropertyForm from './PropertyForm.vue'
+
+const { push } = useRouter()
+
+defineOptions({ name: 'ProductProperty' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -159,6 +161,11 @@ const handleDelete = async (id: number) => {
     // 刷新列表
     await getList()
   } catch {}
+}
+
+/** 跳转商品属性列表 */
+const goValueList = (id: number) => {
+  push({ name: 'ProductPropertyValue', params: { propertyId: id } })
 }
 
 /** 初始化 **/

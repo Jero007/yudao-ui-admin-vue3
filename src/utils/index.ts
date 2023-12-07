@@ -1,3 +1,5 @@
+import { toNumber } from 'lodash-es'
+
 /**
  *
  * @param component 需要注册的组件
@@ -34,6 +36,13 @@ export const underlineToHump = (str: string): string => {
   })
 }
 
+/**
+ * 驼峰转横杠
+ */
+export const humpToDash = (str: string): string => {
+  return str.replace(/([A-Z])/g, '-$1').toLowerCase()
+}
+
 export const setCssVar = (prop: string, val: any, dom = document.documentElement) => {
   dom.style.setProperty(prop, val)
 }
@@ -67,7 +76,7 @@ export const trim = (str: string) => {
  * @param {Date | number | string} time 需要转换的时间
  * @param {String} fmt 需要转换的格式 如 yyyy-MM-dd、yyyy-MM-dd HH:mm:ss
  */
-export const formatTime = (time: Date | number | string, fmt: string) => {
+export function formatTime(time: Date | number | string, fmt: string) {
   if (!time) return ''
   else {
     const date = new Date(time)
@@ -98,13 +107,20 @@ export const formatTime = (time: Date | number | string, fmt: string) => {
 /**
  * 生成随机字符串
  */
-export const toAnyString = () => {
+export function toAnyString() {
   const str: string = 'xxxxx-xxxxx-4xxxx-yxxxx-xxxxx'.replace(/[xy]/g, (c: string) => {
     const r: number = (Math.random() * 16) | 0
     const v: number = c === 'x' ? r : (r & 0x3) | 0x8
     return v.toString()
   })
   return str
+}
+
+/**
+ * 首字母大写
+ */
+export function firstUpperCase(str: string) {
+  return str.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
 }
 
 export const generateUUID = () => {
@@ -174,7 +190,6 @@ export const copyValueToTarget = (target, source) => {
   Object.assign(target, newObj)
 }
 
-// TODO @puhui999：返回要带上 .00 哈.例如说 1.00
 /**
  * 将一个整数转换为分数保留两位小数
  * @param num
@@ -183,6 +198,34 @@ export const formatToFraction = (num: number | string | undefined): number => {
   if (typeof num === 'undefined') return 0
   const parsedNumber = typeof num === 'string' ? parseFloat(num) : num
   return parseFloat((parsedNumber / 100).toFixed(2))
+}
+
+/**
+ * 将一个数转换为 1.00 这样
+ * 数据呈现的时候使用
+ *
+ * @param num 整数
+ */
+export const floatToFixed2 = (num: number | string | undefined): string => {
+  let str = '0.00'
+  if (typeof num === 'undefined') {
+    return str
+  }
+  const f = formatToFraction(num)
+  const decimalPart = f.toString().split('.')[1]
+  const len = decimalPart ? decimalPart.length : 0
+  switch (len) {
+    case 0:
+      str = f.toString() + '.00'
+      break
+    case 1:
+      str = f.toString() + '0'
+      break
+    case 2:
+      str = f.toString()
+      break
+  }
+  return str
 }
 
 /**
@@ -200,12 +243,45 @@ export const convertToInteger = (num: number | string | undefined): number => {
  * 元转分
  */
 export const yuanToFen = (amount: string | number): number => {
-  return Math.round(Number(amount) * 100)
+  return convertToInteger(amount)
 }
 
 /**
  * 分转元
  */
-export const fenToYuan = (amount: string | number): number => {
-  return Number((Number(amount) / 100).toFixed(2))
+export const fenToYuan = (price: string | number): number => {
+  return formatToFraction(price)
+}
+
+/**
+ * 计算环比
+ *
+ * @param value 当前数值
+ * @param reference 对比数值
+ */
+export const calculateRelativeRate = (value?: number, reference?: number) => {
+  // 防止除0
+  if (!reference) return 0
+
+  return ((100 * ((value || 0) - reference)) / reference).toFixed(0)
+}
+
+/**
+ * 获取链接的参数值
+ * @param key 参数键名
+ * @param urlStr 链接地址，默认为当前浏览器的地址
+ */
+export const getUrlValue = (key: string, urlStr: string = location.href): string => {
+  if (!urlStr || !key) return ''
+  const url = new URL(decodeURIComponent(urlStr))
+  return url.searchParams.get(key) ?? ''
+}
+
+/**
+ * 获取链接的参数值（值类型）
+ * @param key 参数键名
+ * @param urlStr 链接地址，默认为当前浏览器的地址
+ */
+export const getUrlNumberValue = (key: string, urlStr: string = location.href): number => {
+  return toNumber(getUrlValue(key, urlStr))
 }

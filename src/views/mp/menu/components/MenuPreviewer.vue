@@ -26,7 +26,7 @@
             @end="onChildDragEnd"
           >
             <template #item="{ element: child, index: y }">
-              <div class="subtitle menu_bottom">
+              <div class="menu_bottom subtitle">
                 <div
                   class="menu_subItem"
                   v-if="parent.children"
@@ -57,7 +57,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { Menu } from './types'
 import draggable from 'vuedraggable'
 
@@ -219,8 +219,8 @@ const onChildDragEnd = ({ newIndex }) => {
 }
 
 .draggable-ghost {
-  opacity: 0.5;
   background: #f7fafc;
   border: 1px solid #4299e1;
+  opacity: 0.5;
 }
 </style>

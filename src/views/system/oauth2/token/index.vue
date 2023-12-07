@@ -98,10 +98,13 @@
   </ContentWrap>
 </template>
 
-<script setup lang="ts" name="SystemTokenClient">
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import * as OAuth2AccessTokenApi from '@/api/system/oauth2/token'
+
+defineOptions({ name: 'SystemTokenClient' })
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
@@ -112,7 +115,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   userId: null,
-  userType: null,
+  userType: undefined,
   clientId: null
 })
 const queryFormRef = ref() // 搜索的表单

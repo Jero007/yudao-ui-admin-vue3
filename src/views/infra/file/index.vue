@@ -59,6 +59,21 @@
         :formatter="fileSizeFormatter"
       />
       <el-table-column label="文件类型" align="center" prop="type" width="180px" />
+      <el-table-column label="文件内容" align="center" prop="url" width="110px">
+        <template #default="{ row }">
+          <el-image
+            v-if="row.type.includes('image')"
+            class="h-80px w-80px"
+            lazy
+            :src="row.url"
+            :preview-src-list="[row.url]"
+            preview-teleported
+            fit="cover"
+          />
+          <el-link v-else-if="row.type.includes('pdf')" type="primary" :href="row.url" :underline="false" target="_blank">预览</el-link>
+          <el-link v-else type="primary" download :href="row.url" :underline="false" target="_blank">下载</el-link>
+        </template>
+      </el-table-column>
       <el-table-column
         label="上传时间"
         align="center"
@@ -91,11 +106,14 @@
   <!-- 表单弹窗：添加/修改 -->
   <FileForm ref="formRef" @success="getList" />
 </template>
-<script setup lang="ts" name="InfraFile">
+<script lang="ts" setup>
 import { fileSizeFormatter } from '@/utils'
 import { dateFormatter } from '@/utils/formatTime'
 import * as FileApi from '@/api/infra/file'
 import FileForm from './FileForm.vue'
+
+defineOptions({ name: 'InfraFile' })
+
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
@@ -107,6 +125,7 @@ const queryParams = reactive({
   pageSize: 10,
   name: undefined,
   type: undefined,
+  path: undefined,
   createTime: []
 })
 const queryFormRef = ref() // 搜索的表单

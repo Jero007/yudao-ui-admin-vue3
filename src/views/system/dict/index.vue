@@ -49,7 +49,7 @@
           end-placeholder="结束日期"
           start-placeholder="开始日期"
           type="daterange"
-          value-format="yyyy-MM-dd HH:mm:ss"
+          value-format="YYYY-MM-DD HH:mm:ss"
         />
       </el-form-item>
       <el-form-item>
@@ -140,12 +140,14 @@
   <DictTypeForm ref="formRef" @success="getList" />
 </template>
 
-<script lang="ts" name="SystemDictType" setup>
+<script lang="ts" setup>
 import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
 import { dateFormatter } from '@/utils/formatTime'
 import * as DictTypeApi from '@/api/system/dict/dict.type'
 import DictTypeForm from './DictTypeForm.vue'
 import download from '@/utils/download'
+
+defineOptions({ name: 'SystemDictType' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

@@ -57,13 +57,15 @@
     </el-descriptions>
   </Dialog>
 </template>
-<script lang="ts" name="SystemOperateLogDetail" setup>
+<script lang="ts" setup>
 import { formatDate } from '@/utils/formatTime'
 import * as OperateLogApi from '@/api/system/operatelog'
 
+defineOptions({ name: 'SystemOperateLogDetail' })
+
 const dialogVisible = ref(false) // 弹窗的是否展示
 const detailLoading = ref(false) // 表单的加载中
-const detailData = ref() // 详情数据
+const detailData = ref({} as OperateLogApi.OperateLogVO) // 详情数据
 
 /** 打开弹窗 */
 const open = async (data: OperateLogApi.OperateLogVO) => {

@@ -32,22 +32,24 @@
       <el-descriptions-item label="请求耗时">{{ detailData.duration }} ms</el-descriptions-item>
       <el-descriptions-item label="操作结果">
         <div v-if="detailData.resultCode === 0">正常</div>
-        <div v-else-if="detailData.resultCode > 0"
-          >失败 | {{ detailData.resultCode }} | {{ detailData.resultMsg }}
+        <div v-else-if="detailData.resultCode > 0">
+          失败 | {{ detailData.resultCode }} | {{ detailData.resultMsg }}
         </div>
       </el-descriptions-item>
     </el-descriptions>
   </Dialog>
 </template>
 
-<script lang="ts" name="ApiAccessLogDetail" setup>
+<script lang="ts" setup>
 import { DICT_TYPE } from '@/utils/dict'
 import { formatDate } from '@/utils/formatTime'
 import * as ApiAccessLog from '@/api/infra/apiAccessLog'
 
+defineOptions({ name: 'ApiAccessLogDetail' })
+
 const dialogVisible = ref(false) // 弹窗的是否展示
 const detailLoading = ref(false) // 表单地加载中
-const detailData = ref() // 详情数据
+const detailData = ref({} as ApiAccessLog.ApiAccessLogVO) // 详情数据
 
 /** 打开弹窗 */
 const open = async (data: ApiAccessLog.ApiAccessLogVO) => {
